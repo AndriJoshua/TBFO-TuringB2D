@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konversi Biner ke Desimal dengan Kotak</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="Kotakutama">
+        <h1>Konversi Biner ke Desimal</h1>
+        <form id="convertForm" method="POST" onsubmit="generateBoxes(); return false;">
+            <input type="text" id="digitInput" name="angkabiner" placeholder="Masukkan Angka Biner (e.g. 1011)" required>
+            <select name="operation">
+                <option value="b2d">Konversi</option>
+            </select>
+            <button type="submit">Hitung</button>
+        </form>
+
+        <h2 id="result"></h2>
+
+        <div id="arrayContainer" class="array-container"></div>
+    </div>
+
+    <script>
+        function generateBoxes() {
+    // Mengambil nilai input dari pengguna
+    let digitInput = document.getElementById('digitInput').value;
+    let arrayContainer = document.getElementById('arrayContainer');
+
+    // Menghapus kotak-kotak sebelumnya
+    arrayContainer.innerHTML = '';
+
+    // Loop melalui setiap karakter dalam input
+    for (let i = 0; i < digitInput.length; i++) {
+        let digit = digitInput[i];
+
+        // Membuat elemen div untuk kotak
+        let box = document.createElement('div');
+        box.className = 'array-box';
+        box.textContent = digit;
+
+        // Menambahkan kotak ke dalam container
+        arrayContainer.appendChild(box);
+    }
+
+    // Logika konversi biner ke desimal dan menampilkan hasilnya
+    try {
+        let desimal = parseInt(digitInput, 2);
+        if (isNaN(desimal)) {
+            throw new Error("Input tidak valid. Pastikan hanya menggunakan angka 0 dan 1.");
+        }
+        document.getElementById('result').textContent = `Hasil: ${desimal}`;
+    } catch (error) {
+        document.getElementById('result').textContent = error.message;
+    }
+}
+
+    </script>
+</body>
+</html>
