@@ -9,6 +9,7 @@
       href="{{ url_for('static', filename='style.css') }}"
     />
     <style>
+      /* Gaya tambahan untuk kotak dan spinner */
       .array-box {
         display: inline-block;
         margin: 5px;
@@ -64,7 +65,7 @@
           placeholder="Masukkan Angka Biner (e.g. 1011)"
           required
         />
-        <select name="operation">
+        <select name="operation" id="operation">
           <option value="b2d">Konversi Biner Ke Desimal</option>
         </select>
         <button type="submit">Hitung</button>
@@ -86,33 +87,61 @@
         arrayContainer.innerHTML = "";
         resultElement.textContent = "";
 
-        if (!/^[01]+$/.test(digitInput)) {
-          resultElement.textContent =
-            "Input tidak valid. Pastikan hanya menggunakan angka 0 dan 1.";
-          return;
-        }
-
         spinner.style.display = "block";
 
-        let desimal = 0;
+        try {
+          // mengirim data ke Flask menggunakan AJAX
+          const response = await fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+              angkabiner: digitInput,
+              operation: "b2d",
+            }),
+          });
 
-        for (let i = 0; i < digitInput.length; i++) {
-          let digit = digitInput[i];
-          let box = document.createElement("div");
-          box.className = "array-box processing";
-          box.textContent = digit;
-          arrayContainer.appendChild(box);
+          const data = await response.json(); // Parse respons JSON dari Flask
 
-          await new Promise((resolve) => setTimeout(resolve, 500));
+          if (!response.ok) {
+            // Tampilkan pesan error dari Flask jika status bukan 200
+            resultElement.innerHTML = `<strong>Error: ${data.error}</strong>`;
+            spinner.style.display = "none";
+            return;
+          }
 
-          desimal = desimal * 2 + parseInt(digit, 10);
-          resultElement.textContent = `Hasil sementara: ${desimal}`;
+          // Tampilkan hasil akhir dari Flask Python
+          resultElement.innerHTML = `<strong>Hasil dari Simulasi Turing Python: ${data.result}</strong>`;
 
-          box.classList.remove("processing");
+          // Proses visualisasi
+          let desimal = 0;
+
+          for (let i = 0; i < digitInput.length; i++) {
+            let digit = digitInput[i];
+            let box = document.createElement("div");
+            box.className = "array-box processing";
+            box.textContent = digit;
+            arrayContainer.appendChild(box);
+
+            await new Promise((resolve) => setTimeout(resolve, 500));
+
+            desimal = desimal * 2 + parseInt(digit, 10);
+            resultElement.innerHTML = `
+        <strong>Hasil dari Python: ${data.result}</strong><br>
+        Hasil sementara: ${desimal}
+      `;
+
+            box.classList.remove("processing");
+          }
+
+          resultElement.innerHTML = `
+      <strong>Hasil dari Python: ${data.result}</strong><br>
+      Hasil akhir: ${desimal}
+    `;
+        } catch (error) {
+          resultElement.innerHTML = `<strong>Error: Terjadi kesalahan saat memproses data.</strong>`;
+        } finally {
+          spinner.style.display = "none";
         }
-
-        resultElement.textContent = `Hasil akhir: ${desimal}`;
-        spinner.style.display = "none";
       }
     </script>
   </body>
