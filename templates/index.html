@@ -1,61 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Konversi Biner ke Desimal dengan Kotak</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <style>
+      .array-box {
+        display: inline-block;
+        margin: 5px;
+        padding: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        border: 2px solid #333;
+        border-radius: 5px;
+        background-color: #f0f0f0;
+        transition: background-color 0.3s ease-in-out;
+      }
+
+      .array-box.processing {
+        background-color: #ffeb3b;
+      }
+
+      .spinner {
+        display: none;
+        margin: 20px auto;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
     <div class="Kotakutama">
-        <h1>Konversi Biner ke Desimal</h1>
-        <form id="convertForm" method="POST" onsubmit="generateBoxes(); return false;">
-            <input type="text" id="digitInput" name="angkabiner" placeholder="Masukkan Angka Biner (e.g. 1011)" required>
-            <select name="operation">
-                <option value="b2d">Konversi</option>
-            </select>
-            <button type="submit">Hitung</button>
-        </form>
+      <h1>Konversi Biner ke Desimal</h1>
+      <form
+        id="convertForm"
+        method="POST"
+        onsubmit="generateBoxes(); return false;"
+      >
+        <input
+          type="text"
+          id="digitInput"
+          name="angkabiner"
+          placeholder="Masukkan Angka Biner (e.g. 1011)"
+          required
+        />
+        <select name="operation">
+          <option value="b2d">Konversi Biner Ke Desimal</option>
+        </select>
+        <button type="submit">Hitung</button>
+      </form>
 
-        <h2 id="result"></h2>
+      <div id="spinner" class="spinner"></div>
 
-        <div id="arrayContainer" class="array-container"></div>
+      <h2 id="result"></h2>
+      <div id="arrayContainer" class="array-container"></div>
     </div>
 
     <script>
-        function generateBoxes() {
-    // Mengambil nilai input dari pengguna
-    let digitInput = document.getElementById('digitInput').value;
-    let arrayContainer = document.getElementById('arrayContainer');
+      async function generateBoxes() {
+        let digitInput = document.getElementById("digitInput").value;
+        let arrayContainer = document.getElementById("arrayContainer");
+        let resultElement = document.getElementById("result");
+        let spinner = document.getElementById("spinner");
 
-    // Menghapus kotak-kotak sebelumnya
-    arrayContainer.innerHTML = '';
+        arrayContainer.innerHTML = "";
+        resultElement.textContent = "";
 
-    // Loop melalui setiap karakter dalam input
-    for (let i = 0; i < digitInput.length; i++) {
-        let digit = digitInput[i];
-
-        // Membuat elemen div untuk kotak
-        let box = document.createElement('div');
-        box.className = 'array-box';
-        box.textContent = digit;
-
-        // Menambahkan kotak ke dalam container
-        arrayContainer.appendChild(box);
-    }
-
-    // Logika konversi biner ke desimal dan menampilkan hasilnya
-    try {
-        let desimal = parseInt(digitInput, 2);
-        if (isNaN(desimal)) {
-            throw new Error("Input tidak valid. Pastikan hanya menggunakan angka 0 dan 1.");
+        if (!/^[01]+$/.test(digitInput)) {
+          resultElement.textContent =
+            "Input tidak valid. Pastikan hanya menggunakan angka 0 dan 1.";
+          return;
         }
-        document.getElementById('result').textContent = `Hasil: ${desimal}`;
-    } catch (error) {
-        document.getElementById('result').textContent = error.message;
-    }
-}
 
+        spinner.style.display = "block";
+
+        let desimal = 0;
+
+        for (let i = 0; i < digitInput.length; i++) {
+          let digit = digitInput[i];
+          let box = document.createElement("div");
+          box.className = "array-box processing";
+          box.textContent = digit;
+          arrayContainer.appendChild(box);
+
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
+          desimal = desimal * 2 + parseInt(digit, 10);
+          resultElement.textContent = `Hasil sementara: ${desimal}`;
+
+          box.classList.remove("processing");
+        }
+
+        resultElement.textContent = `Hasil akhir: ${desimal}`;
+        spinner.style.display = "none";
+      }
     </script>
-</body>
+  </body>
 </html>
