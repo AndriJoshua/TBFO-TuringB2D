@@ -1,9 +1,9 @@
 body {
-    height: 100vh; /* Menggunakan tinggi penuh viewport */
+    height: 100vh; 
     margin: 0;
     display: flex;
-    justify-content: center; /* Memusatkan secara horizontal */
-    align-items: center; /* Memusatkan secara vertikal */
+    justify-content: center; 
+    align-items: center; 
     background: linear-gradient(135deg, #1e3c72, #2a5298);
     font-family: 'Arial', sans-serif;
     color: #fff;
@@ -30,7 +30,7 @@ body {
 }
 
 .Kotakutama h2 {
-    color: #333; /* Warna hasil konversi */
+    color: #333; 
     margin-top: 20px;
     font-size: 1.5em;
 }
@@ -68,7 +68,7 @@ body {
 
 .array-container {
     display: flex;
-    gap: 2px; /* Jarak antar kotak */
+    gap: 2px; 
     padding: 20px;
     background-color: #fff;
     border-radius: 10px;
