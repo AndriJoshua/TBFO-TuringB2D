@@ -124,12 +124,11 @@
             arrayContainer.appendChild(box);
 
             await new Promise((resolve) => setTimeout(resolve, 500));
-
+            //box.textContent = "X";<---- Bagian ini opsional untuk mengubah angka binner yang telah dibaca menjadi X
             //rumus biner ke desimal
             desimal += parseInt(digit, 10) * Math.pow(2, pangkat);
             pangkat--;
 
-           
             resultElement.innerHTML = `
         <strong>Hasil dari Simulasi Turing Python: ${data.result}</strong><br>
         Hasil sementara: ${desimal}
