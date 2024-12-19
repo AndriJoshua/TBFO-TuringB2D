@@ -62,7 +62,7 @@
           type="text"
           id="digitInput"
           name="angkabiner"
-          placeholder="Masukkan Angka Biner (e.g. 1011)"
+          placeholder="Masukkan Angka Biner (contoh : 1011)"
           required
         />
         <select name="operation" id="operation">
@@ -112,8 +112,9 @@
           // Tampilkan hasil akhir dari Flask Python
           resultElement.innerHTML = `<strong>Hasil dari Simulasi Turing Python: ${data.result}</strong>`;
 
-          // Proses visualisasi
-          let desimal = 0;
+          // visualisasi
+          let desimal = 0; // Hasil akhir
+          let pangkat = digitInput.length - 1; // dimulai dari pangkat terbesar panjang digit biner - 1
 
           for (let i = 0; i < digitInput.length; i++) {
             let digit = digitInput[i];
@@ -124,9 +125,13 @@
 
             await new Promise((resolve) => setTimeout(resolve, 500));
 
-            desimal = desimal * 2 + parseInt(digit, 10);
+            //rumus biner ke desimal
+            desimal += parseInt(digit, 10) * Math.pow(2, pangkat);
+            pangkat--;
+
+           
             resultElement.innerHTML = `
-        <strong>Hasil dari Python: ${data.result}</strong><br>
+        <strong>Hasil dari Simulasi Turing Python: ${data.result}</strong><br>
         Hasil sementara: ${desimal}
       `;
 
